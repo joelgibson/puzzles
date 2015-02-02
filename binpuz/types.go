@@ -78,7 +78,7 @@ func FromString(s string) (Board, error) {
 	if len(lines) == 0 {
 		return Board{}, errors.New("Board must contain data")
 	}
-	size := len(lines[0])
+	size := len(lines)
 	if size%2 != 0 {
 		return Board{}, errors.New("Board size must be even")
 	}
