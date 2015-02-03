@@ -18,13 +18,12 @@ func BenchmarkUniqueEmpty12x12(b *testing.B) {
 	}
 }
 
-// TOO SLOW
-//func BenchmarkUniqueEmpty14x14(b *testing.B) {
-//	p := New(14)
-//	for i := 0; i < b.N; i++ {
-//		p.HasUniqueSoln()
-//	}
-//}
+func BenchmarkHasSolnEmpty14x14(b *testing.B) {
+	p := New(14)
+	for i := 0; i < b.N; i++ {
+		p.HasSoln()
+	}
+}
 
 func BenchmarkCountAll6x6(b *testing.B) {
 	p := New(6)
@@ -33,7 +32,7 @@ func BenchmarkCountAll6x6(b *testing.B) {
 	}
 }
 
-func BenchmarkSolveDifficult12x12(b *testing.B) {
+func BenchmarkCountDifficult12x12(b *testing.B) {
 	vhard := `.00....1..01
 ............
 ....0.0...0.

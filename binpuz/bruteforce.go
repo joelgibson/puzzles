@@ -34,6 +34,12 @@ func (b Board) ListSolns() []Board {
 // atMost limits the number of solutions returned (early exits). -1 to deactivate
 // listSolns returns a list of the actual moves taken for every solution returned
 func (b Board) bruteSolve(atMost int, listSolns bool) (nsolns int, solns []Board) {
+	// Firstly, use the definite solution methods
+	if soln, _, err := b.Solve(); err != nil {
+		return 0, nil
+	} else {
+		b = soln
+	}
 	// Helper method: if it returns true, early exit pls
 	var solve func(i, j int) bool
 	solve = func(i, j int) bool {

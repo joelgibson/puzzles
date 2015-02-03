@@ -163,7 +163,7 @@ func completeRow(b Board, rowidx int, fullValidate bool) [][]smallChange {
 	}
 	zeros, ones := countZeroOne(row)
 
-	maxChoices := 20
+	maxChoices := 15
 	choices := ncr(len(row)-zeros-ones, len(row)/2-zeros)
 	if choices > maxChoices {
 		return nil
@@ -317,10 +317,13 @@ var strats = []func(Board) Step{
 	completeRowsFull,
 }
 
-// This is the general solver which will solve the board as far as possible using the given strategies.
-// It returns a copy of the board which is as far as it got, the steps it used to get there, and possibly
-// an error, reporting an inconsistency in the board.
-func (b Board) Solve() (Board, []Step, error) {
+var assistStrats = []func(Board) Step {
+	fixedRepls,
+	remainingNos,
+	completeRowsSmall,
+}
+
+func (b Board) solveUsing(strats []func(Board)Step) (Board, []Step, error) {
 	b = b.Clone()
 	var steps []Step
 	var err error
@@ -341,10 +344,18 @@ func (b Board) Solve() (Board, []Step, error) {
 	return b, steps, err
 }
 
+// This is the general solver which will solve the board as far as possible using the given strategies.
+// It returns a copy of the board which is as far as it got, the steps it used to get there, and possibly
+// an error, reporting an inconsistency in the board.
+func (b Board) Solve() (Board, []Step, error) {
+	soln, steps, err := b.solveUsing(strats)
+	return soln, steps, err
+}
+
 // MaybeSolve is used to assist backtracking. It will mutate the board, but also return the changes
 // needed to reverse it. If an inconsistency is caused, it will return false and back off it's changes.
 func (b *Board) MaybeSolve() ([]Change, bool) {
-	q, steps, err := b.Solve()
+	q, steps, err := b.solveUsing(assistStrats)
 	if err != nil {
 		return nil, false
 	}
